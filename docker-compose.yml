@@ -1,0 +1,14 @@
+version: '3.7'
+services:
+  web:
+    build: .
+    # command: mix phx.server  
+    stdin_open: true
+    volumes:
+      - .:/home/app
+    ports:
+      - "4000:4000"
+    environment:
+      MIX_ENV: ${MIX_ENV}
+      PORT: 4000
+  
