@@ -4,7 +4,6 @@ defmodule Awelix.Services.Packages.Github.GithubApiTest do
   require Awelix.Pact
 
   alias Awelix.Services.Packages.Github.GithubApi
-  alias Awelix.Services.Packages.Package
   alias Awelix.Helpers.Mocks.{HttpReadmeOk, HttpOkStars, HttpError}
 
   describe "http ok" do
@@ -16,7 +15,7 @@ defmodule Awelix.Services.Packages.Github.GithubApiTest do
 
     test "fetch repo stars" do
       Awelix.Pact.register(:http, HttpOkStars)
-      assert {:ok, 10} == GithubApi.fetch_repo_stars(%Package{owner: "owner", repo: "repo"})
+      assert {:ok, 10} == GithubApi.fetch_repo_stars("owner", "repo")
     end
   end
 

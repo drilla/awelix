@@ -47,12 +47,12 @@ defmodule Awelix.Services.Packages.Github.PackageGrabber do
     end
   end
 
-  @spec fetch_each_repo_stars([Package.t()]) :: [Package.t()]
+ @spec fetch_each_repo_stars([Package.t()]) :: [Package.t() | :error]
   defp fetch_each_repo_stars(readme_packages) do
     Task.async_stream(
       readme_packages,
-      fn %Package{} = package ->
-        case Pact.github_api().fetch_repo_stars(package) do
+      fn %Package{owner: owner, repo: repo} = package ->
+        case Pact.github_api().fetch_repo_stars(owner, repo) do
           {:ok, stars} -> %Package{package | stars: stars}
           _ -> :error
         end
@@ -67,8 +67,8 @@ defmodule Awelix.Services.Packages.Github.PackageGrabber do
   defp fetch_each_repo_last_commit_date(readme_packages) do
     Task.async_stream(
       readme_packages,
-      fn %Package{} = package ->
-        case Pact.github_api().fetch_repo_last_commit_date(package) do
+      fn %Package{owner: owner, repo: repo} = package ->
+        case Pact.github_api().fetch_repo_last_commit_date(owner, repo) do
           {:ok, date} -> %Package{package | last_commit_date: date}
           _ -> :error
         end
