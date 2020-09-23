@@ -30,8 +30,6 @@ defmodule Awelix.Services.Packages.Github.PackageGrabberTest do
 
   describe "github api errors " do
     setup do
-      Awelix.Pact.register(:github_api, GithubApiReadmeError)
-
       extractor =
         Awelix.Pact.generate :github_readme_packages_extractor do
           def extract(_body) do
@@ -39,6 +37,7 @@ defmodule Awelix.Services.Packages.Github.PackageGrabberTest do
           end
         end
 
+      Awelix.Pact.register(:github_api, GithubApiReadmeError)
       Awelix.Pact.register(:github_readme_packages_extractor, extractor)
       %{}
     end

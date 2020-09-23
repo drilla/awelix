@@ -1,17 +1,5 @@
 defmodule Awelix.Services.Packages.Github.GithubApiInterface do
-  @callback fetch_file(binary(), binary(), binary()) ::
-              {:error, HTTPoison.Error.t()}
-              | {:ok,
-                 %{
-                   :__struct__ => HTTPoison.Response,
-                   :body => binary()
-                 }}
-
-  @callback fetch_repository_info(binary(), binary()) ::
-              {:error, HTTPoison.Error.t()}
-              | {:ok,
-                 %{
-                   :__struct__ => HTTPoison.Response,
-                   :body => binary()
-                 }}
+  @callback fetch_readme(binary(), binary()) :: {:ok, binary()} | {:error, :github_api_error | :other}
+  @callback fetch_repo_stars(Package.t()) :: {:ok, integer()} | {:error, :github_api_error | :other}
+  @callback fetch_repo_last_commit_date(Package.t()) :: {:ok, DateTime.t()} | {:error, :github_api_error | :other}
 end

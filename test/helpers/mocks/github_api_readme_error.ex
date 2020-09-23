@@ -2,12 +2,17 @@ defmodule Awelix.Helpers.Mocks.GithubApiReadmeError do
   @behaviour Awelix.Services.Packages.Github.GithubApiInterface
 
   @impl true
-  def fetch_file(_, _, _) do
-    {:error, %HTTPoison.Error{id: nil, reason: "any"}}
+  def fetch_readme(_, _) do
+    {:error, :github_api_error}
   end
 
   @impl true
-  def fetch_repository_info(binary, binary) do
-    nil
+  def fetch_repo_stars(_) do
+    {:error, :github_api_error}
+  end
+
+  @impl true
+  def fetch_repo_last_commit_date(_) do
+    {:error, :github_api_error}
   end
 end

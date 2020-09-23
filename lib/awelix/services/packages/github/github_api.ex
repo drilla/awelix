@@ -1,29 +1,48 @@
 defmodule Awelix.Services.Packages.Github.GithubApi do
   alias Awelix.Services.Packages.Package
+  alias Awelix.Pact, as: Pact
 
   require Logger
 
   @behaviour Awelix.Services.Packages.Github.GithubApiInterface
 
   @github_url "https://api.github.com"
+  #def fetch_repo(owner, repo) do
+   # with url <- repo_url(owner, repo),
+    #     {:ok, %HTTPoison.Response{body: body}} <- Pact.http_client().get(url, headers()),
+     #    {:ok, decoded} <- Jason.decode(body) do
+     # decoded
+    #else
+     # error ->
+     #   Logger.error(inspect(error))
+      #  :error
+    #end
+  #end
+
 
   @impl true
-  def fetch_file(owner, repo, path) do
-    file_url(owner, repo, path)
-    |> HTTPoison.get(headers())
+  def fetch_readme(owner, repo) do
+    with url <- readme_url(owner, repo),
+         {:ok, %HTTPoison.Response{body: body}} <- Pact.http_client().get(url, headers()),
+         {:ok, %{"content" => base64_content}} <- Jason.decode(body),
+         {:ok, decoded} <- Base.decode64(base64_content) do
+      {:ok, decoded}
+    else
+      {:error, %HTTPoison.Error{} = error} ->
+        Logger.error(inspect(error))
+        {:error, :github_api_error}
+      error ->
+        Logger.error(inspect(error))
+        {:error, :other}
+    end
   end
 
   @impl true
-  def fetch_repository_info(owner, repo) do
-    repo_url(owner, repo)
-    |> HTTPoison.get(headers())
-  end
-
-  @spec fetch_repo_stars(Package.t()) :: integer() | :error
   def fetch_repo_stars(%Package{owner: owner, repo: repo}) do
-    with {:ok, %HTTPoison.Response{body: body}} <- fetch_repository_info(owner, repo),
+    with url <- repo_url(owner, repo),
+         {:ok, %HTTPoison.Response{body: body}} <- Pact.http_client().get(url, headers()),
          {:ok, %{"stargazers_count" => stars}} <- Jason.decode(body) do
-      stars
+      {:ok, stars}
     else
       error ->
         Logger.error(inspect(error))
@@ -31,17 +50,17 @@ defmodule Awelix.Services.Packages.Github.GithubApi do
     end
   end
 
-  @spec fetch_repo_last_commit_date(Package.t()) :: DateTime.t()| :error
+  @impl true
   def fetch_repo_last_commit_date(%Package{} = _package) do
-    DateTime.utc_now()
-  end
-
-  defp file_url(owner, repo, path) do
-    "#{@github_url}/repos/#{owner}/#{repo}/contents/#{path}"
+    {:ok, DateTime.utc_now()}
   end
 
   defp repo_url(owner, repo) do
     "#{@github_url}/repos/#{owner}/#{repo}"
+  end
+
+  defp readme_url(owner, repo) do
+    "#{@github_url}/repos/#{owner}/#{repo}/reamde"
   end
 
   defp headers() do

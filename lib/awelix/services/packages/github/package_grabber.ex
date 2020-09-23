@@ -11,8 +11,8 @@ defmodule Awelix.Services.Packages.Github.PackageGrabber do
   @spec fetch() ::
           {:ok, list()} | {:error, atom()}
   def fetch() do
-    with {:ok, %HTTPoison.Response{body: body}} <- fetch_project_readme_packages(),
-         {:ok, readme_packages} <- parse_readme(body),
+    with {:ok, readme} <- Pact.github_api().fetch_readme("h4cc", "awesome-elixir"),
+         {:ok, readme_packages} <- parse_readme(readme),
          {:ok, packages} <- fetch_packages(readme_packages |> Enum.take(1)) do
       {:ok, packages}
     else
@@ -40,10 +40,8 @@ defmodule Awelix.Services.Packages.Github.PackageGrabber do
   end
 
   @spec parse_readme(binary()) :: {:ok, list} | {:error, :cannot_decode}
-  defp parse_readme(body) do
-    with {:ok, %{"content" => base64_content}} <- Jason.decode(body),
-         {:ok, decoded_body} <- decode_content(base64_content),
-         {:ok, list_of_packages} <- Pact.github_readme_packages_extractor().extract(decoded_body) do
+  defp parse_readme(contents) do
+    with {:ok, list_of_packages} <- Pact.github_readme_packages_extractor().extract(contents) do
       {:ok, list_of_packages}
     else
       any ->
@@ -52,23 +50,13 @@ defmodule Awelix.Services.Packages.Github.PackageGrabber do
     end
   end
 
-  defp decode_content(content) do
-    Base.decode64(content, ignore: :whitespace)
-  end
-
-  @spec fetch_project_readme_packages() ::
-          {:ok, HTTPoison.Response.t()} | {:error, HTTPoison.Error.t()}
-  defp fetch_project_readme_packages() do
-    Awelix.Pact.github_api().fetch_file("h4cc", "awesome-elixir", "README.md")
-  end
-
   @spec fetch_each_repo_stars([Package.t()]) :: [Package.t()]
   defp fetch_each_repo_stars(readme_packages) do
     Task.async_stream(
       readme_packages,
       fn %Package{} = package ->
-         stars = Pact.github_api().fetch_repo_stars(package)
-         %Package{ package | stars: stars}
+        stars = Pact.github_api().fetch_repo_stars(package)
+        %Package{package | stars: stars}
       end,
       max_concurrency: 10
     )
@@ -81,8 +69,8 @@ defmodule Awelix.Services.Packages.Github.PackageGrabber do
     Task.async_stream(
       readme_packages,
       fn %Package{} = package ->
-         date =  Pact.github_api().fetch_repo_last_commit_date(package)
-         %Package{ package | last_commit_date: date}
+        date = Pact.github_api().fetch_repo_last_commit_date(package)
+        %Package{package | last_commit_date: date}
       end,
       max_concurrency: 10
     )
