@@ -52,8 +52,8 @@ defmodule Awelix.Services.Packages.Github.Readme.PackagesExtractor do
     items
     |> Enum.map(&parse_item(&1))
     |> Enum.filter(fn item -> item != :error end)
-    |> Enum.map(&Map.put_new(&1, :category_desc, Enum.join(desc)))
-    |> Enum.map(&Map.put_new(&1, :category, category))
+    |> Enum.map(&Map.put(&1, :category_desc, Enum.join(desc)))
+    |> Enum.map(&Map.put(&1, :category, category))
   end
 
   defp parse_item(%EarmarkParser.Block.ListItem{

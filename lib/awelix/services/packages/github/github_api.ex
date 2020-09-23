@@ -7,33 +7,27 @@ defmodule Awelix.Services.Packages.Github.GithubApi do
   @behaviour Awelix.Services.Packages.Github.GithubApiInterface
 
   @github_url "https://api.github.com"
-  #def fetch_repo(owner, repo) do
-   # with url <- repo_url(owner, repo),
-    #     {:ok, %HTTPoison.Response{body: body}} <- Pact.http_client().get(url, headers()),
-     #    {:ok, decoded} <- Jason.decode(body) do
-     # decoded
-    #else
-     # error ->
-     #   Logger.error(inspect(error))
-      #  :error
-    #end
-  #end
-
+  # def fetch_repo(owner, repo) do
+  # with url <- repo_url(owner, repo),
+  #     {:ok, %HTTPoison.Response{body: body}} <- Pact.http_client().get(url, headers()),
+  #    {:ok, decoded} <- Jason.decode(body) do
+  # decoded
+  # else
+  # error ->
+  #   Logger.error(inspect(error))
+  #  :error
+  # end
+  # end
 
   @impl true
   def fetch_readme(owner, repo) do
-    with url <- readme_url(owner, repo),
+    with url <- readme_url(owner, repo) |> IO.inspect(),
          {:ok, %HTTPoison.Response{body: body}} <- Pact.http_client().get(url, headers()),
          {:ok, %{"content" => base64_content}} <- Jason.decode(body),
-         {:ok, decoded} <- Base.decode64(base64_content) do
+         {:ok, decoded} <- Base.decode64(base64_content, ignore: :whitespace) do
       {:ok, decoded}
     else
-      {:error, %HTTPoison.Error{} = error} ->
-        Logger.error(inspect(error))
-        {:error, :github_api_error}
-      error ->
-        Logger.error(inspect(error))
-        {:error, :other}
+      error -> recycle_error(error)
     end
   end
 
@@ -44,9 +38,7 @@ defmodule Awelix.Services.Packages.Github.GithubApi do
          {:ok, %{"stargazers_count" => stars}} <- Jason.decode(body) do
       {:ok, stars}
     else
-      error ->
-        Logger.error(inspect(error))
-        :error
+      error -> recycle_error(error)
     end
   end
 
@@ -55,12 +47,22 @@ defmodule Awelix.Services.Packages.Github.GithubApi do
     {:ok, DateTime.utc_now()}
   end
 
+  defp recycle_error({:error, %HTTPoison.Error{} = error}) do
+    Logger.error(inspect(error))
+    {:error, :github_api_error}
+  end
+
+  defp recycle_error(error) do
+    Logger.error(inspect(error))
+    {:error, :other}
+  end
+
   defp repo_url(owner, repo) do
     "#{@github_url}/repos/#{owner}/#{repo}"
   end
 
   defp readme_url(owner, repo) do
-    "#{@github_url}/repos/#{owner}/#{repo}/reamde"
+    "#{@github_url}/repos/#{owner}/#{repo}/readme"
   end
 
   defp headers() do

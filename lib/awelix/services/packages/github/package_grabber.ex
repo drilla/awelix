@@ -16,9 +16,6 @@ defmodule Awelix.Services.Packages.Github.PackageGrabber do
          {:ok, packages} <- fetch_packages(readme_packages |> Enum.take(1)) do
       {:ok, packages}
     else
-      {:error, %HTTPoison.Error{}} ->
-        {:error, :github_api_error}
-
       {:error, _reason} = result ->
         result
     end
@@ -55,8 +52,10 @@ defmodule Awelix.Services.Packages.Github.PackageGrabber do
     Task.async_stream(
       readme_packages,
       fn %Package{} = package ->
-        stars = Pact.github_api().fetch_repo_stars(package)
-        %Package{package | stars: stars}
+        case Pact.github_api().fetch_repo_stars(package) do
+          {:ok, stars} -> %Package{package | stars: stars}
+          _ -> :error
+        end
       end,
       max_concurrency: 10
     )
@@ -69,8 +68,10 @@ defmodule Awelix.Services.Packages.Github.PackageGrabber do
     Task.async_stream(
       readme_packages,
       fn %Package{} = package ->
-        date = Pact.github_api().fetch_repo_last_commit_date(package)
-        %Package{package | last_commit_date: date}
+        case Pact.github_api().fetch_repo_last_commit_date(package) do
+          {:ok, date} -> %Package{package | last_commit_date: date}
+          _ -> :error
+        end
       end,
       max_concurrency: 10
     )
