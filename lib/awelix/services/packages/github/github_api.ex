@@ -6,7 +6,7 @@ defmodule Awelix.Services.Packages.Github.GithubApi do
   @behaviour Awelix.Services.Packages.Github.GithubApiInterface
 
   @github_url "https://api.github.com"
-
+  @git_token System.get_env("GIT_TOKEN")
   @impl true
   def fetch_readme(owner, repo) do
     with url <- readme_url(owner, repo),
@@ -70,6 +70,9 @@ defmodule Awelix.Services.Packages.Github.GithubApi do
   end
 
   defp headers() do
-    [{"Accept", "application/vnd.github.v3+json"}]
+    [
+      {"Accept", "application/vnd.github.v3+json"},
+      {"Authorization", "token #{@git_token}"}
+    ]
   end
 end

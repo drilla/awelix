@@ -10,5 +10,6 @@ services:
       - "4000:4000"
     environment:
       MIX_ENV: ${MIX_ENV}
+      GIT_TOKEN: ${GIT_TOKEN}
       PORT: 4000
   
