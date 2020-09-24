@@ -75,14 +75,14 @@ defmodule Awelix.Services.Packages.Github.Readme.PackagesExtractor do
       }
     else
       _ ->
-        Logger.info(text)
+        Logger.info("cannot parse correctly:" <> text)
         :error
     end
   end
 
   defp parse_line(line) do
     case Regex.run(@line_regex, line) do
-      nil -> raise("Line does not match format: '#{line}' Is there a dot at the end?")
+      nil -> :line_parse_failed
       [^line, name, url, description, _dot] -> {url, name, description}
     end
   end

@@ -1,5 +1,4 @@
 defmodule Awelix.Services.Packages.RepoUpdater do
-
   @behaviour Awelix.Services.Packages.RepoUpdaterInterface
 
   alias Awelix.Pact, as: Pact
@@ -13,15 +12,12 @@ defmodule Awelix.Services.Packages.RepoUpdater do
   @spec update_async() :: {:ok, :update_started}
   def update_async() do
     Task.async(fn ->
-      result =
-        Pact.github_package_grabber().fetch()
+      result = Pact.github_package_grabber().fetch()
 
       case result do
-         :content_not_changed ->
-          nil
-
         {:ok, packages} ->
           Pact.repo().update(packages)
+
         {:error, reason} ->
           Logger.error(inspect(reason))
       end

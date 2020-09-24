@@ -49,6 +49,9 @@ defmodule Awelix.Services.Packages.ApiTest do
       assert {:error, :not_ready_yet} = Api.fetch()
     end
 
+    test "fetch packages min stars - failure: not initialized yet" do
+      assert {:error, :not_ready_yet} = Api.fetch(10)
+    end
   end
 
 end
