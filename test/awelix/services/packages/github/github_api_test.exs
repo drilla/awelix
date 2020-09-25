@@ -4,7 +4,7 @@ defmodule Awelix.Services.Packages.Github.GithubApiTest do
   require Awelix.Pact
 
   alias Awelix.Services.Packages.Github.GithubApi
-  alias Awelix.Helpers.Mocks.{HttpReadmeOk, HttpOkStars, HttpOkLastCommit, HttpError}
+  alias Awelix.Helpers.Mocks.{HttpOkBodyCorrupt, HttpReadmeOk, HttpOkStars, HttpOkLastCommit, HttpError}
 
   describe "http ok" do
     test "fetch readme contents" do
@@ -17,6 +17,7 @@ defmodule Awelix.Services.Packages.Github.GithubApiTest do
       Awelix.Pact.register(:http, HttpOkStars)
       assert {:ok, 10} == GithubApi.fetch_repo_stars("owner", "repo")
     end
+
     test "last commit date" do
       Awelix.Pact.register(:http, HttpOkLastCommit)
       assert {:ok, date} = GithubApi.fetch_repo_last_commit_date("owner", "repo")
@@ -40,6 +41,25 @@ defmodule Awelix.Services.Packages.Github.GithubApiTest do
 
     test "last commit" do
       assert {:error, :github_api_error} = GithubApi.fetch_repo_last_commit_date("owner", "repo")
+    end
+  end
+
+  describe "ohter error" do
+    setup do
+      Awelix.Pact.register(:http, HttpOkBodyCorrupt)
+      %{}
+    end
+
+    test "readme" do
+      assert {:error, :other} = GithubApi.fetch_readme("owner", "repo")
+    end
+
+    test "stars" do
+      assert {:error, :other} = GithubApi.fetch_repo_stars("owner", "repo")
+    end
+
+    test "last commit" do
+      assert {:error, :other} = GithubApi.fetch_repo_last_commit_date("owner", "repo")
     end
   end
 end
