@@ -1,9 +1,9 @@
-defmodule Awelix.Services.Packages.Github.GithubApi do
+defmodule Awelix.Services.Github.GithubApi do
   alias Awelix.Pact, as: Pact
 
   require Logger
 
-  @behaviour Awelix.Services.Packages.Github.GithubApiInterface
+  @behaviour Awelix.Services.Github.GithubApiInterface
 
   @github_url "https://api.github.com"
   @git_token System.get_env("GIT_TOKEN")

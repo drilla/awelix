@@ -1,9 +1,9 @@
-defmodule Awelix.Services.Packages.Github.GithubApiTest do
+defmodule Awelix.Services.Github.GithubApiTest do
   use ExUnit.Case
 
   require Awelix.Pact
 
-  alias Awelix.Services.Packages.Github.GithubApi
+  alias Awelix.Services.Github.GithubApi
   alias Awelix.Helpers.Mocks.{HttpOkBodyCorrupt, HttpReadmeOk, HttpOkStars, HttpOkLastCommit, HttpError}
 
   describe "http ok" do

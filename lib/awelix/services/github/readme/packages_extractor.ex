@@ -1,9 +1,9 @@
-defmodule Awelix.Services.Packages.Github.Readme.PackagesExtractor do
+defmodule Awelix.Services.Github.Readme.PackagesExtractor do
   alias Awelix.Services.Packages.Package
 
   require Logger
 
-  @behaviour Awelix.Services.Packages.Github.Readme.PackagesExtractorInterface
+  @behaviour Awelix.Services.Github.Readme.PackagesExtractorInterface
 
   # This is how a line has to look like.
   @line_regex ~r/^\[([^]]+)\]\(([^)]+)\) - (.+)([\.\!]+)$/

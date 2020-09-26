@@ -1,4 +1,4 @@
-defmodule Awelix.Services.Packages.RepoInterface do
+defmodule Awelix.Services.Repo.RepoInterface do
   alias Awelix.Services.Packages.Package
 
   @doc """

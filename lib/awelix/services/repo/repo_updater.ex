@@ -1,5 +1,5 @@
-defmodule Awelix.Services.Packages.RepoUpdater do
-  @behaviour Awelix.Services.Packages.RepoUpdaterInterface
+defmodule Awelix.Services.Repo.RepoUpdater do
+  @behaviour Awelix.Services.Repo.RepoUpdaterInterface
 
   alias Awelix.Pact, as: Pact
 

@@ -1,8 +1,7 @@
-defmodule Awelix.Services.Packages.RepoUpdaterTest do
+defmodule Awelix.Services.Repo.RepoUpdaterTest do
   use ExUnit.Case, async: false
 
-  alias Awelix.Services.Packages.RepoUpdater
-  alias Awelix.Services.Packages.Package
+  alias Awelix.Services.Repo.RepoUpdater
   require Awelix.Pact
 
   @doc """
@@ -12,7 +11,7 @@ defmodule Awelix.Services.Packages.RepoUpdaterTest do
     setup do
       repo =
         Awelix.Pact.generate :repo do
-          def update(list) do
+          def update(_) do
             true
           end
         end
@@ -39,7 +38,7 @@ defmodule Awelix.Services.Packages.RepoUpdaterTest do
     setup do
       repo =
         Awelix.Pact.generate :repo do
-          def update(list) do
+          def update(_) do
             true
           end
         end

@@ -1,5 +1,5 @@
 defmodule Awelix.Helpers.Mocks.GithubApiReadmeOk do
-  @behaviour Awelix.Services.Packages.Github.GithubApiInterface
+  @behaviour Awelix.Services.Github.GithubApiInterface
 
   @impl true
   def fetch_readme(_, _) do
@@ -13,7 +13,7 @@ defmodule Awelix.Helpers.Mocks.GithubApiReadmeOk do
   end
 
   @impl true
-  def fetch_repo_last_commit_date(_, _) do
+  def fetch_repo_last_commit_date(_, _, _) do
     {:ok, DateTime.utc_now()}
   end
 

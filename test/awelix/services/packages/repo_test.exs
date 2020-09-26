@@ -1,7 +1,7 @@
-defmodule Awelix.Services.Packages.RepoTest do
+defmodule Awelix.Services.Repo.RepoTest do
   use ExUnit.Case, async: false
 
-  alias Awelix.Services.Packages.Repo
+  alias Awelix.Services.Repo.Repo
   require Awelix.Pact
 
   @table :packages
@@ -27,10 +27,6 @@ defmodule Awelix.Services.Packages.RepoTest do
     Repo.update([%{}])
     assert {:ok, list} = Repo.fetch()
     assert Enum.count(list) == 1
-  end
-
-  defp ets_clear() do
-    :ets.delete_all_objects(@table)
   end
 
   defp update_ets_table_direct() do

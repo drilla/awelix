@@ -1,4 +1,4 @@
-defmodule Awelix.Services.Packages.Github.PackageGrabber do
+defmodule Awelix.Services.Github.PackageGrabber do
   require Logger
 
   alias Awelix.Pact, as: Pact

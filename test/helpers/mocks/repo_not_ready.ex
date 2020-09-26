@@ -1,7 +1,7 @@
 defmodule Awelix.Helpers.Mocks.RepoNotReady do
   alias Awelix.Services.Packages.Package
 
-  @behaviour Awelix.Services.Packages.RepoInterface
+  @behaviour Awelix.Services.Repo.RepoInterface
 
   @impl true
   def fetch() do

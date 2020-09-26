@@ -1,5 +1,5 @@
-defmodule Awelix.Services.Packages.Repo do
-  @behaviour Awelix.Services.Packages.RepoInterface
+defmodule Awelix.Services.Repo.Repo do
+  @behaviour Awelix.Services.Repo.RepoInterface
 
   @ets_table :packages
 

@@ -1,10 +1,9 @@
-defmodule Awelix.Services.Packages.Github.PackageGrabberTest do
+defmodule Awelix.Services.Github.PackageGrabberTest do
   use ExUnit.Case
 
   require Awelix.Pact
 
-  alias Awelix.Services.Packages.Github.PackageGrabber
-  alias Awelix.Services.Packages.Package
+  alias Awelix.Services.Github.PackageGrabber
   alias Awelix.Helpers.Mocks.{GithubApiReadmeOk, GithubApiReadmeError}
 
   describe "fetch packages - success" do

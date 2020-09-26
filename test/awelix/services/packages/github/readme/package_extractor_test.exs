@@ -1,4 +1,4 @@
-defmodule Awelix.Services.Packages.Github.Readme.PackageExtractorTest do
+defmodule Awelix.Services.Github.Readme.PackageExtractorTest do
   use ExUnit.Case
 
   require Awelix.Pact
@@ -7,7 +7,7 @@ defmodule Awelix.Services.Packages.Github.Readme.PackageExtractorTest do
   # общее число 1292, но валидных - 1268, остальные не от гитхаба
   @static_readme_packages_count 1268
 
-  alias Awelix.Services.Packages.Github.Readme.PackagesExtractor
+  alias Awelix.Services.Github.Readme.PackagesExtractor
 
   describe "extract packages" do
     setup do

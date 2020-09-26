@@ -2,14 +2,14 @@ defmodule Awelix.Pact do
   use Pact
 
   register(:http, HTTPoison)
-  register(:repo, Awelix.Services.Packages.Repo)
-  register(:repo_updater, Awelix.Services.Packages.RepoUpdater)
-  register(:github_package_grabber, Awelix.Services.Packages.Github.PackageGrabber)
-  register(:github_readme_packages_extractor, Awelix.Services.Packages.Github.Readme.PackagesExtractor)
-  register(:github_api,             Awelix.Services.Packages.Github.GithubApi)
+  register(:repo, Awelix.Services.Repo.Repo)
+  register(:repo_updater, Awelix.Services.Repo.RepoUpdater)
+  register(:github_package_grabber, Awelix.Services.Github.PackageGrabber)
+  register(:github_readme_packages_extractor, Awelix.Services.Github.Readme.PackagesExtractor)
+  register(:github_api,             Awelix.Services.Github.GithubApi)
 
   @doc """
-    :: Awelix.Services.Packages.RepoInterface
+    :: Awelix.Services.Repo.RepoInterface
   """
   def repo(), do: Awelix.Pact.get(:repo)
 
