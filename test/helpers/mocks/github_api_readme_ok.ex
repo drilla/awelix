@@ -8,7 +8,7 @@ defmodule Awelix.Helpers.Mocks.GithubApiReadmeOk do
   end
 
   @impl true
-  def fetch_repo_stars(_, _) do
+  def fetch_repo_info(_, _) do
     {:ok, 10}
   end
 

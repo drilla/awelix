@@ -21,7 +21,7 @@ defmodule Awelix.Services.Packages.Github.GithubApi do
   end
 
   @impl true
-  def fetch_repo_stars(owner, repo) do
+  def fetch_repo_info(owner, repo) do
     url = repo_url(owner, repo)
 
     with {:ok, %HTTPoison.Response{body: body}} <-

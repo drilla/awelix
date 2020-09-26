@@ -13,9 +13,9 @@ defmodule Awelix.Services.Packages.Github.GithubApiTest do
       assert {:ok, "123456"} = GithubApi.fetch_readme("owner", "repo")
     end
 
-    test "fetch repo stars" do
+    test "fetch repo info" do
       Awelix.Pact.register(:http, HttpOkStars)
-      assert {:ok, %{stars: 10, branch: "branch"}} == GithubApi.fetch_repo_stars("owner", "repo")
+      assert {:ok, %{stars: 10, branch: "branch"}} == GithubApi.fetch_repo_info("owner", "repo")
     end
 
     test "last commit date" do
@@ -35,8 +35,8 @@ defmodule Awelix.Services.Packages.Github.GithubApiTest do
       assert {:error, :github_api_error} = GithubApi.fetch_readme("owner", "repo")
     end
 
-    test "stars" do
-      assert {:error, :github_api_error} = GithubApi.fetch_repo_stars("owner", "repo")
+    test "info" do
+      assert {:error, :github_api_error} = GithubApi.fetch_repo_info("owner", "repo")
     end
 
     test "last commit" do
@@ -55,7 +55,7 @@ defmodule Awelix.Services.Packages.Github.GithubApiTest do
     end
 
     test "stars" do
-      assert {:error, :other} = GithubApi.fetch_repo_stars("owner", "repo")
+      assert {:error, :other} = GithubApi.fetch_repo_info("owner", "repo")
     end
 
     test "last commit" do

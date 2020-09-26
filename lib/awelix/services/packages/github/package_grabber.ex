@@ -55,7 +55,7 @@ defmodule Awelix.Services.Packages.Github.PackageGrabber do
     Task.async_stream(
       readme_packages,
       fn %Package{owner: owner, repo: repo} = package ->
-        case Pact.github_api().fetch_repo_stars(owner, repo) do
+        case Pact.github_api().fetch_repo_info(owner, repo) do
           {:ok, %{stars: stars, branch: branch}} ->
             %Package{package | stars: stars, branch: branch}
           _ -> :error
