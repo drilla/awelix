@@ -1,5 +1,5 @@
 defmodule Awelix.Helpers.Mocks.HttpOkLastCommit do
-  def get(_, _) do
+  def get(_, _, _) do
     {:ok,
      %HTTPoison.Response{
        body: ~s(

@@ -15,12 +15,12 @@ defmodule Awelix.Services.Packages.Github.GithubApiTest do
 
     test "fetch repo stars" do
       Awelix.Pact.register(:http, HttpOkStars)
-      assert {:ok, 10} == GithubApi.fetch_repo_stars("owner", "repo")
+      assert {:ok, %{stars: 10, branch: "branch"}} == GithubApi.fetch_repo_stars("owner", "repo")
     end
 
     test "last commit date" do
       Awelix.Pact.register(:http, HttpOkLastCommit)
-      assert {:ok, date} = GithubApi.fetch_repo_last_commit_date("owner", "repo")
+      assert {:ok, date} = GithubApi.fetch_repo_last_commit_date("owner", "repo", "branch")
       assert DateTime.to_iso8601(date) == "2020-09-15T09:35:03Z"
     end
   end
@@ -40,7 +40,7 @@ defmodule Awelix.Services.Packages.Github.GithubApiTest do
     end
 
     test "last commit" do
-      assert {:error, :github_api_error} = GithubApi.fetch_repo_last_commit_date("owner", "repo")
+      assert {:error, :github_api_error} = GithubApi.fetch_repo_last_commit_date("owner", "repo", "branch")
     end
   end
 
@@ -59,7 +59,7 @@ defmodule Awelix.Services.Packages.Github.GithubApiTest do
     end
 
     test "last commit" do
-      assert {:error, :other} = GithubApi.fetch_repo_last_commit_date("owner", "repo")
+      assert {:error, :other} = GithubApi.fetch_repo_last_commit_date("owner", "repo", "branch")
     end
   end
 end

@@ -12,8 +12,8 @@ defmodule Awelix.Services.Packages.Repo do
   end
 
   @impl true
-  def update(items, checksum \\ nil) do
-    :ets.insert(@ets_table, [{:items, items}, {:updated_at, DateTime.utc_now()}, {:source_sha, checksum}])
+  def update(items) do
+    :ets.insert(@ets_table, [{:items, items}, {:updated_at, DateTime.utc_now()}])
   end
 
 end

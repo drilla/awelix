@@ -22,6 +22,7 @@ defmodule Awelix.Services.Packages.Github.Readme.PackagesExtractor do
       |> Enum.chunk_every(3)
       |> Enum.map(&parse_category(&1))
       |> List.flatten()
+      |> remove_errors()
 
     {:ok, result}
   end
@@ -93,5 +94,9 @@ defmodule Awelix.Services.Packages.Github.Readme.PackagesExtractor do
       [_url, owner, repo] -> {owner, repo}
       nil -> :error
     end
+  end
+
+  defp remove_errors(list) do
+    Enum.filter(list, fn item -> item != :error end)
   end
 end

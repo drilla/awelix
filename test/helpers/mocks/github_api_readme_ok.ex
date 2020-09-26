@@ -9,12 +9,12 @@ defmodule Awelix.Helpers.Mocks.GithubApiReadmeOk do
 
   @impl true
   def fetch_repo_stars(_, _) do
-    {:error, :github_api_error}
+    {:ok, 10}
   end
 
   @impl true
   def fetch_repo_last_commit_date(_, _) do
-    {:error, :github_api_error}
+    {:ok, DateTime.utc_now()}
   end
 
 end

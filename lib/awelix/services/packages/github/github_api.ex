@@ -10,7 +10,8 @@ defmodule Awelix.Services.Packages.Github.GithubApi do
   @impl true
   def fetch_readme(owner, repo) do
     with url <- readme_url(owner, repo),
-         {:ok, %HTTPoison.Response{body: body}} <- Pact.http_client().get(url, headers()),
+         {:ok, %HTTPoison.Response{body: body}} <-
+           Pact.http_client().get(url, headers(), follow_redirect: true),
          {:ok, %{"content" => base64_content}} <- Jason.decode(body),
          {:ok, decoded} <- Base.decode64(base64_content, ignore: :whitespace) do
       {:ok, decoded}
@@ -21,31 +22,43 @@ defmodule Awelix.Services.Packages.Github.GithubApi do
 
   @impl true
   def fetch_repo_stars(owner, repo) do
-    with url <- repo_url(owner, repo),
-         {:ok, %HTTPoison.Response{body: body}} <- Pact.http_client().get(url, headers()),
-         {:ok, %{"stargazers_count" => stars}} <- Jason.decode(body) do
-      {:ok, stars}
+    url = repo_url(owner, repo)
+
+    with {:ok, %HTTPoison.Response{body: body}} <-
+           Pact.http_client().get(url, headers(), follow_redirect: true),
+         {:ok, %{"stargazers_count" => stars, "default_branch" => branch}} <- Jason.decode(body) do
+      Logger.info("stars fethced: #{url}")
+      {:ok, %{stars: stars, branch: branch}}
     else
-      error -> recycle_error(error)
+      error -> recycle_error(error, url)
     end
   end
 
   @impl true
-  def fetch_repo_last_commit_date(owner, repo) do
-    with url <- master_branch_url(owner, repo),
-         {:ok, %HTTPoison.Response{body: body}} <- Pact.http_client().get(url, headers()),
+  def fetch_repo_last_commit_date(owner, repo, branch) do
+    url = branch_url(owner, repo, branch)
+
+    with {:ok, %HTTPoison.Response{body: body}} <-
+           Pact.http_client().get(url, headers(), follow_redirect: true),
          {:ok, %{"commit" => %{"commit" => %{"author" => %{"date" => date_str}}}}} <-
            Jason.decode(body),
          {:ok, datetime, _} <- DateTime.from_iso8601(date_str) do
+      Logger.info("datetime fethced: #{url}")
       {:ok, datetime}
     else
-      error -> recycle_error(error)
+      error ->
+        recycle_error(error, url)
     end
   end
 
   #########
   # PRIVATE
   #########
+
+  defp recycle_error(error, url) do
+    Logger.error(url)
+    recycle_error(error)
+  end
 
   defp recycle_error({:error, %HTTPoison.Error{} = error}) do
     Logger.error(inspect(error))
@@ -61,8 +74,8 @@ defmodule Awelix.Services.Packages.Github.GithubApi do
     "#{@github_url}/repos/#{owner}/#{repo}"
   end
 
-  defp master_branch_url(owner, repo) do
-    "#{@github_url}/repos/#{owner}/#{repo}/branches/master"
+  defp branch_url(owner, repo, branch) do
+    "#{@github_url}/repos/#{owner}/#{repo}/branches/#{branch}"
   end
 
   defp readme_url(owner, repo) do

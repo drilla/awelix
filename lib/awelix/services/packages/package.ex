@@ -6,10 +6,11 @@ defmodule Awelix.Services.Packages.Package do
           category_desc: binary,
           owner: binary,
           repo: binary,
+          branch: binary,
           url: binary,
           stars: integer,
           last_commit_date: DateTime.t()
         }
 
-  defstruct [:name, :desc, :category, :category_desc, :owner, :repo, :url, :stars, :last_commit_date]
+  defstruct [:name, :desc, :category, :category_desc, :owner, :repo, :branch, :url, :stars, :last_commit_date]
 end

@@ -5,8 +5,6 @@ defmodule Awelix.Services.Packages.RepoUpdater do
 
   require Logger
 
-  @github_api_response_await_ms 10000
-
   require Awelix.Pact
 
   @spec update_async() :: {:ok, :update_started}
@@ -19,10 +17,10 @@ defmodule Awelix.Services.Packages.RepoUpdater do
           Pact.repo().update(packages)
 
         {:error, reason} ->
+          Logger.error("info update failed")
           Logger.error(inspect(reason))
       end
     end)
-    |> Task.await(@github_api_response_await_ms)
 
     {:ok, :update_started}
   end
