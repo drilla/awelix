@@ -37,13 +37,14 @@ defmodule Awelix.MixProject do
     [
       {:phoenix, "~> 1.5.4"},
       {:phoenix_html, "~> 2.11"},
-      {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:earmark, "~> 1.4"},
       {:pact, "~> 0.2.1"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:httpoison, "~> 1.7"},
+      {:gen_worker, ">= 0.0.1"},
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:excoveralls, "~> 0.10", only: :test},
     ]
   end

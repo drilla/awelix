@@ -6,27 +6,31 @@ defmodule Awelix.Application do
   use Application
 
   def start(_type, _args) do
-
     Awelix.Services.Repo.Repo.init_table()
 
     children = [
       Awelix.Pact,
       # Start the Telemetry supervisor
-     # AwelixWeb.Telemetry,
+      # AwelixWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: Awelix.PubSub},
 
-     # Start the Endpoint (http/https)
-      AwelixWeb.Endpoint
+      # Start the Endpoint (http/https)
+      AwelixWeb.Endpoint,
 
       # Start a worker by calling: Awelix.Worker.start_link(arg)
       # {Awelix.Worker, arg}
+      Awelix.Services.Repo.RepoUpdater
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Awelix.Supervisor]
-    Supervisor.start_link(children, opts)
+    result = Supervisor.start_link(children, opts)
+
+    Awelix.Services.Repo.RepoUpdater.run([])
+
+    result
   end
 
   # Tell Phoenix to update the endpoint configuration
