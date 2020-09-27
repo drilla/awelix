@@ -4,6 +4,9 @@ defmodule Awelix.Services.Github.PackageGrabber do
   alias Awelix.Pact, as: Pact
   alias Awelix.Services.Packages.Package
 
+  @limit Application.get_env(:awelix, :packages_limit)
+  @parallel_requests Application.get_env(:awelix, :parallel_requests)
+
   ###########
   # INTERFACE
   ###########
@@ -13,7 +16,7 @@ defmodule Awelix.Services.Github.PackageGrabber do
   def fetch() do
     with {:ok, readme} <- Pact.github_api().fetch_readme("h4cc", "awesome-elixir"),
          {:ok, readme_packages} <- parse_readme(readme),
-         {:ok, packages} <- fetch_packages(readme_packages |> Enum.take(100)) do
+         {:ok, packages} <- fetch_packages(readme_packages |> limit(@limit)) do
       {:ok, packages}
     else
       {:error, _reason} = result ->
@@ -61,7 +64,7 @@ defmodule Awelix.Services.Github.PackageGrabber do
           _ -> :error
         end
       end,
-      max_concurrency: 40
+      max_concurrency: @parallel_requests
     )
     |> Enum.to_list()
     |> remove_package_errors()
@@ -78,7 +81,7 @@ defmodule Awelix.Services.Github.PackageGrabber do
           _ -> :error
         end
       end,
-      max_concurrency: 40
+      max_concurrency: @parallel_requests
     )
     |> Enum.to_list()
     |> Enum.map(fn {_, item} -> item end)
@@ -88,4 +91,7 @@ defmodule Awelix.Services.Github.PackageGrabber do
   defp remove_package_errors(list) do
     Enum.filter(list, fn item -> item != {:ok, :error} end)
   end
+
+  defp limit(list, nil), do: list
+  defp limit(list, count), do: Enum.take(list, count)
 end

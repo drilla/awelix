@@ -6,8 +6,10 @@
 
 # General application configuration
 use Mix.Config
+config  :awelix,
+  parallel_requests: 300
 
-# Configures the endpoint
+  # Configures the endpoint
 config :awelix, AwelixWeb.Endpoint,
   url: [host: "localhost"],
   http: [port: 4000],

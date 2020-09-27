@@ -6,8 +6,11 @@ defmodule Awelix.Application do
   use Application
 
   def start(_type, _args) do
-    children = [
 
+    Awelix.Services.Repo.Repo.init_table()
+
+    children = [
+      Awelix.Pact,
       # Start the Telemetry supervisor
      # AwelixWeb.Telemetry,
       # Start the PubSub system

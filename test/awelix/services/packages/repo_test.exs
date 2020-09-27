@@ -4,23 +4,22 @@ defmodule Awelix.Services.Repo.RepoTest do
   alias Awelix.Services.Repo.Repo
   require Awelix.Pact
 
-  @table :packages
   setup do
-    :ets.new(@table, [:set, :public, :named_table])
+    :ets.delete_all_objects(:packages)
     %{}
   end
 
+  test "fetch packages info - failure: not initialized yet" do
+    assert {:error, :not_ready_yet} = Repo.fetch()
+  end
+
   test "fetch packages info - success" do
-    update_ets_table_direct()
+    Repo.update([%{}])
     result = Repo.fetch()
 
     assert {:ok, items} = result
     assert is_list(items)
     assert Enum.count(items) == 1
-  end
-
-  test "fetch packages info - failure: not initialized yet" do
-    assert {:error, :not_ready_yet} = Repo.fetch()
   end
 
   test "update facility" do
@@ -29,10 +28,4 @@ defmodule Awelix.Services.Repo.RepoTest do
     assert Enum.count(list) == 1
   end
 
-  defp update_ets_table_direct() do
-    :ets.insert(@table, [
-      {:items, [%{}]},
-      {:updated_at, DateTime.utc_now()},
-    ])
-  end
 end

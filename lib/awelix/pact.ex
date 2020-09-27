@@ -6,7 +6,7 @@ defmodule Awelix.Pact do
   register(:repo_updater, Awelix.Services.Repo.RepoUpdater)
   register(:github_package_grabber, Awelix.Services.Github.PackageGrabber)
   register(:github_readme_packages_extractor, Awelix.Services.Github.Readme.PackagesExtractor)
-  register(:github_api,             Awelix.Services.Github.GithubApi)
+  register(:github_api, Awelix.Services.Github.GithubApi)
 
   @doc """
     :: Awelix.Services.Repo.RepoInterface
@@ -22,6 +22,18 @@ defmodule Awelix.Pact do
   def github_api(), do: Awelix.Pact.get(:github_api)
 
   def github_readme_packages_extractor(), do: Awelix.Pact.get(:github_readme_packages_extractor)
+
+  def child_spec() do
+    %{
+      id: __MODULE__,
+      start: {__MODULE__, :start_link, [], name: __MODULE__}
+    }
+  end
+
+  def start_link(_args) do
+    start_link()
+  end
+
 end
 
-Awelix.Pact.start_link()
+# Awelix.Pact.start_link()
