@@ -1,0 +1,12 @@
+/* This file is for your main application css. */
+@import "./phoenix.css";
+
+.nav li {
+  display: inline-flex;
+  margin-right: 5px;
+}
+
+
+li {
+  margin-bottom: 0;
+}
