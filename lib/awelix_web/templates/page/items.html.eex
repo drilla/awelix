@@ -1,0 +1,7 @@
+<ul>
+<%= for %Awelix.Services.Packages.Package{name: name, url: url} <- @items do %>
+  <li>
+    <a href="<%= url %>"><%= name %></a>
+  </li>
+<% end %>
+</ul>

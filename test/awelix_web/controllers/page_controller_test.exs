@@ -11,12 +11,12 @@ defmodule AwelixWeb.PageControllerTest do
     test "GET /", %{conn: conn} do
       conn = get(conn, "/")
 
-      assert html_response(conn, 200) =~ "Welcome to Phoenix!"
+      assert html_response(conn, 200) =~ "Awesome Elixir"
     end
 
     test "GET / with params", %{conn: conn} do
       conn = get(conn, "/", %{"min_stars" => "12"})
-      assert html_response(conn, 200) =~ "Welcome to Phoenix!"
+      assert html_response(conn, 200) =~ "Awesome Elixir"
     end
 
     test "GET / with invalid min_stars param", %{conn: conn} do

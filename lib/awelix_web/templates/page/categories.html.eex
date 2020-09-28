@@ -1,0 +1,6 @@
+<%= for category <- @categories do %>
+    <h3 id="<%= anchor(category) %>"><%= category.name %></h3>
+    <div>
+        <%= Phoenix.View.render(AwelixWeb.PageView, "items.html", items: category.items) %>
+    </div>
+<% end %>

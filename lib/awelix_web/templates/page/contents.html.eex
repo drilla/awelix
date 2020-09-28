@@ -1,0 +1,7 @@
+<ul>
+<%= for category <- @categories do %>
+  <li>
+    <a href="#<%= anchor(category) %>"><%= category.name %></a>
+  </li>
+<% end %>
+</ul>

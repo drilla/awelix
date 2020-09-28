@@ -23,7 +23,7 @@ config :awelix, AwelixWeb.Endpoint,
   ]
 
 config  :awelix,
-  packages_limit: 100,
+  packages_limit: 30,
   parallel_requests: 300
 
 # Do not include metadata nor timestamps in development logs

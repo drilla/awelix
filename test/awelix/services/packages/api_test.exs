@@ -12,7 +12,7 @@ defmodule Awelix.Services.Packages.ApiTest do
       %{}
     end
 
-    test "fetch packages info - success" do
+    test "fetch all - success" do
       result = Api.fetch()
 
       assert {:ok, items} = result
@@ -21,13 +21,15 @@ defmodule Awelix.Services.Packages.ApiTest do
 
     end
 
-    test "fetch packages info with min_stars - success" do
-      result = Api.fetch(30)
+    test "fetch categories with min_stars - success" do
+      result = Api.fetch_categories(30)
 
-      assert {:ok, items} = result
-      assert is_list(items)
+      assert {:ok, cats} = result
+      assert is_list(cats)
+      assert Enum.count(cats) == 1
+      %{items: items} = cats |> hd()
+
       assert Enum.count(items) == 3
-
     end
   end
 
@@ -50,7 +52,7 @@ defmodule Awelix.Services.Packages.ApiTest do
     end
 
     test "fetch packages min stars - failure: not initialized yet" do
-      assert {:error, :not_ready_yet} = Api.fetch(10)
+      assert {:error, :not_ready_yet} = Api.fetch_categories(10)
     end
   end
 

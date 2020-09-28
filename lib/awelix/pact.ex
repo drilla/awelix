@@ -1,4 +1,9 @@
 defmodule Awelix.Pact do
+
+  @moduledoc """
+    DEPENDENCY INJECTION MODULE
+  """
+
   use Pact
 
   register(:http, HTTPoison)

@@ -7,12 +7,12 @@ defmodule AwelixWeb.PageController do
   plug AwelixWeb.Plugs.ValidateParamIsInteger, :min_stars
 
   def index(conn, %{"min_stars" => min_stars})  do
-    Api.fetch(min_stars)
+    Api.fetch_categories(min_stars |> String.to_integer())
     |> render_result(conn)
   end
 
   def index(conn, _params) do
-    Api.fetch()
+    Api.fetch_categories(nil)
     |> render_result(conn)
   end
 
@@ -23,7 +23,9 @@ defmodule AwelixWeb.PageController do
     |> render("425.html")
   end
 
-  defp render_result({:ok, _packages}, conn) do
-    render(conn, "index.html")
+  defp render_result({:ok, categories}, conn) do
+    conn
+    |> assign(:categories, categories)
+    |> render("index.html")
   end
 end
