@@ -2,6 +2,7 @@ defmodule Awelix.Services.Repo.RepoUpdaterTest do
   use ExUnit.Case, async: false
 
   alias Awelix.Services.Repo.RepoUpdater
+  alias Awelix.Services.Packages.Package
   require Awelix.Pact
 
   @doc """
@@ -19,7 +20,7 @@ defmodule Awelix.Services.Repo.RepoUpdaterTest do
       grabber =
         Awelix.Pact.generate :github_package_grabber do
           def fetch() do
-            {:ok, [1]}
+            {:ok, [%Awelix.Services.Packages.Package{}]}
           end
         end
 
@@ -30,6 +31,10 @@ defmodule Awelix.Services.Repo.RepoUpdaterTest do
     end
 
     test "update, no failures" do
+      true = RepoUpdater.update()
+    end
+
+    test "update async, no failures" do
       {:ok, :update_started} = RepoUpdater.update_async()
     end
   end
@@ -58,6 +63,7 @@ defmodule Awelix.Services.Repo.RepoUpdaterTest do
 
     test "grabber failure" do
       {:ok, :update_started} = RepoUpdater.update_async()
+      {:error, _} = RepoUpdater.update()
     end
   end
 end

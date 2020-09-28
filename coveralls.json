@@ -6,10 +6,10 @@
     "lib/awelix.ex",
     "lib/awelix/application.ex",
     "lib/awelix/pact.ex",
-    "lib/awelix/services/packages/repo_updater_interface.ex",
-    "lib/awelix/services/packages/repo_interface.ex",
-    "lib/awelix/services/packages/github/github_api_interface.ex",
-    "lib/awelix/services/packages/github/readme/package_extractor_interface.ex",
+    "lib/awelix/services/repo/repo_updater_interface.ex",
+    "lib/awelix/services/repo/repo_interface.ex",
+    "lib/awelix/services/github/github_api_interface.ex",
+    "lib/awelix/services/github/readme/package_extractor_interface.ex",
     "lib/awelix/services/packages/package.ex"
 
   ],
