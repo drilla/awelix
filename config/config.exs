@@ -6,10 +6,15 @@
 
 # General application configuration
 use Mix.Config
-config  :awelix,
+
+config :awelix,
   parallel_requests: 300
 
-  # Configures the endpoint
+# see genworker docs
+config :awelix, Awelix.Services.Repo.RepoUpdater,
+  run_at: %{"daily" => [hour: 0, minute: 0]}
+
+# Configures the endpoint
 config :awelix, AwelixWeb.Endpoint,
   url: [host: "localhost"],
   http: [port: 4000],

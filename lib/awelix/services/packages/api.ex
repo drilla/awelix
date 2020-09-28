@@ -1,4 +1,9 @@
 defmodule Awelix.Services.Packages.Api do
+  @moduledoc """
+    основной модуль для работы приложения.
+    предоставляет список репозиториев
+  """
+
   alias Awelix.Services.Packages.Package
   alias Awelix.Pact, as: Pact
 
@@ -6,6 +11,9 @@ defmodule Awelix.Services.Packages.Api do
 
   require Awelix.Pact
 
+  @doc """
+     получить информацию о репозиториях.
+  """
   @spec fetch() :: {:ok, list} | {:error, :not_ready_yet}
   def fetch() do
     case Pact.repo().fetch() do
@@ -25,6 +33,7 @@ defmodule Awelix.Services.Packages.Api do
     fetch()
     |> filter_by_min_stars(min_stars)
   end
+
   defp filter_by_min_stars({:ok, list}, min_stars) do
     {:ok, Enum.filter(list, fn %Package{stars: stars} -> stars >= min_stars end)}
   end

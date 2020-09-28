@@ -1,4 +1,7 @@
 defmodule Awelix.Services.Github.PackageGrabber do
+  @moduledoc """
+    Загружает информацию о репозиториях, описанных в awesome-elixir из github
+  """
   require Logger
 
   alias Awelix.Pact, as: Pact
@@ -11,6 +14,10 @@ defmodule Awelix.Services.Github.PackageGrabber do
   # INTERFACE
   ###########
 
+  @doc """
+    извлекает информацию о репозиториях из readme и загружает информацию по каждому
+    Фильтрует не-гит репозитории, а также не найденные в гит
+  """
   @spec fetch() ::
           {:ok, list()} | {:error, atom()}
   def fetch() do

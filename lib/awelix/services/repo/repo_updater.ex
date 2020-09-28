@@ -1,8 +1,14 @@
 defmodule Awelix.Services.Repo.RepoUpdater do
+  @moduledoc """
+     обновляет информацию о репозиториях с заданной периодичностью
+  """
   @behaviour Awelix.Services.Repo.RepoUpdaterInterface
 
+  @periodic_update Application.get_env(:awelix, __MODULE__, [])
+
   use GenWorker,
-    run_at: %{"daily" => [hour: 0, minute: 0]}
+    @periodic_update
+
 
   alias Awelix.Pact, as: Pact
 

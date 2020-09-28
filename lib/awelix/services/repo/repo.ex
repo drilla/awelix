@@ -1,4 +1,9 @@
 defmodule Awelix.Services.Repo.Repo do
+  @moduledoc """
+    хранение информации о репозиториях.
+    """
+  #TODO  выбрал :ets но можно было бы сделать genserver
+
   @behaviour Awelix.Services.Repo.RepoInterface
 
   @ets_table :packages

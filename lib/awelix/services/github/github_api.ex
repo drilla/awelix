@@ -1,4 +1,8 @@
 defmodule Awelix.Services.Github.GithubApi do
+  @moduledoc """
+    запрашиваем информацию у github
+  """
+
   alias Awelix.Pact, as: Pact
 
   require Logger
@@ -7,6 +11,10 @@ defmodule Awelix.Services.Github.GithubApi do
 
   @github_url "https://api.github.com"
   @git_token System.get_env("GIT_TOKEN")
+
+  @doc """
+    получаем контент readme
+  """
   @impl true
   def fetch_readme(owner, repo) do
     with url <- readme_url(owner, repo),
