@@ -1,0 +1,26 @@
+/* This file is for your main application css. */
+@import "./phoenix.css";
+
+.nav li {
+  display: inline-flex;
+  margin-right: 5px;
+}
+
+
+li {
+  margin-bottom: 0;
+}
+
+ul.items>li>div {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.gray {
+  color: gray 
+}
+
+.gray a {
+  color: gray
+}
+

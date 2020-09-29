@@ -7,6 +7,9 @@ defmodule AwelixWeb.ErrorView do
   #   "Internal Server Error"
   # end
 
+  def render("425.html", _assigns) do
+    "<h1>Информация загружается. Это не займет много времени! Перезагрузите страницу через 15-20 секунд</h1>"
+  end
   # By default, Phoenix returns the status message from
   # the template name. For example, "404.html" becomes
   # "Not Found".

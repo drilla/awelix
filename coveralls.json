@@ -2,14 +2,24 @@
   "skip_files": [
     "test/support",
     "test/helpers",
-    "lib/awelix_web",
+
+    "lib/awelix_web.ex",
+    "lib/awelix_web/channels/user_socket.ex",        
+    "lib/awelix_web/controllers/page_controller.ex", 
+    "lib/awelix_web/endpoint.ex",                    
+    "lib/awelix_web/gettext.ex",    
+    "lib/awelix_web/views/error_helpers.ex",    
+    "lib/awelix_web/views/layout_view.ex",    
+    
     "lib/awelix.ex",
     "lib/awelix/application.ex",
     "lib/awelix/pact.ex",
+
     "lib/awelix/services/repo/repo_updater_interface.ex",
     "lib/awelix/services/repo/repo_interface.ex",
     "lib/awelix/services/github/github_api_interface.ex",
     "lib/awelix/services/github/readme/package_extractor_interface.ex",
+
     "lib/awelix/services/packages/package.ex",
     "lib/awelix/services/packages/category.ex"
 

@@ -14,8 +14,13 @@
   docker-compose run web /bin/bash
   MIX_ENV=test mix test
 
+Покрытие тестами:
+ mix.coveralls
 
-для запуска
+приложение в докер стартует самостояетльно. 
+кэшу нужен разогрев. обычно это 15-20 сек, тк использован rest 
+можно сделать на graphQL и ускорить, но смысла тут не вижу
+ 
 
 а дальше как обычно
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
@@ -25,9 +30,9 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
  парсить только первые n архивов
  если не указывать - будут взяты все
   
-  * для дев окружения установлено 100 пакетов по умолчанию
+  * для дев окружения установлено 30 пакетов по умолчанию
   config  :awelix,
-    packages_limit: 100
+    packages_limit: 30
 
   * для прод окружения - все пакеты
 
