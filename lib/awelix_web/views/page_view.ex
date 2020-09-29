@@ -15,9 +15,9 @@ defmodule AwelixWeb.PageView do
 
   def gray?(dt) do
     if days(dt) >= 500 do
-    "gray"
-  else
-    ""
+      "gray"
+    else
+      ""
+    end
   end
-end
 end
