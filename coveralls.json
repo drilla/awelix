@@ -10,7 +10,8 @@
     "lib/awelix/services/repo/repo_interface.ex",
     "lib/awelix/services/github/github_api_interface.ex",
     "lib/awelix/services/github/readme/package_extractor_interface.ex",
-    "lib/awelix/services/packages/package.ex"
+    "lib/awelix/services/packages/package.ex",
+    "lib/awelix/services/packages/category.ex"
 
   ],
   "terminal_options": {

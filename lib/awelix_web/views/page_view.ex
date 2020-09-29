@@ -8,4 +8,16 @@ defmodule AwelixWeb.PageView do
     |> String.downcase()
     |> String.replace(" ", "-")
   end
+
+  def days(%DateTime{} = dt) do
+    Timex.diff(Timex.now(), dt, :days)
+  end
+
+  def gray?(dt) do
+    if days(dt) >= 500 do
+    "gray"
+  else
+    ""
+  end
+end
 end
