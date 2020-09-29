@@ -29,3 +29,4 @@ awelix-*.tar
 
 /config/*.secret.exs
 /.env
+priv/static/cache_manifest.json

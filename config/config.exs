@@ -7,9 +7,6 @@
 # General application configuration
 use Mix.Config
 
-config :awelix,
-  parallel_requests: 300
-
 # see genworker docs
 config :awelix, Awelix.Services.Repo.RepoUpdater,
   run_at: %{"daily" => [hour: 0, minute: 0]}

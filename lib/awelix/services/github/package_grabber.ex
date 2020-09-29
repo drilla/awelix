@@ -71,7 +71,8 @@ defmodule Awelix.Services.Github.PackageGrabber do
           _ -> :error
         end
       end,
-      max_concurrency: @parallel_requests
+      max_concurrency: @parallel_requests,
+      on_timeout: {:ok, :error}
     )
     |> Enum.to_list()
     |> remove_package_errors()
@@ -88,7 +89,8 @@ defmodule Awelix.Services.Github.PackageGrabber do
           _ -> :error
         end
       end,
-      max_concurrency: @parallel_requests
+      max_concurrency: @parallel_requests,
+      on_timeout: {:ok, :error}
     )
     |> Enum.to_list()
     |> Enum.map(fn {_, item} -> item end)

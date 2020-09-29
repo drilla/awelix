@@ -14,3 +14,6 @@ config :awelix, AwelixWeb.Endpoint,
 
 # Do not print debug messages in production
 config :logger, level: :error
+config  :awelix,
+  packages_limit: 100,
+  parallel_requests: 100
