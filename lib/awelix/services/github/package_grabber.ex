@@ -72,7 +72,7 @@ defmodule Awelix.Services.Github.PackageGrabber do
         end
       end,
       max_concurrency: @parallel_requests,
-      on_timeout: {:ok, :error}
+      on_timeout: {:exit, :error}
     )
     |> Enum.to_list()
     |> remove_package_errors()
@@ -90,9 +90,10 @@ defmodule Awelix.Services.Github.PackageGrabber do
         end
       end,
       max_concurrency: @parallel_requests,
-      on_timeout: {:ok, :error}
+      on_timeout: {:exit, :error}
     )
     |> Enum.to_list()
+    |> remove_package_errors()
     |> Enum.map(fn {_, item} -> item end)
   end
 

@@ -11,6 +11,10 @@ use Mix.Config
 config :awelix, Awelix.Services.Repo.RepoUpdater,
   run_at: %{"daily" => [hour: 0, minute: 0]}
 
+config :awelix,
+  packages_limit: nil,
+  parallel_requests: 100
+
 # Configures the endpoint
 config :awelix, AwelixWeb.Endpoint,
   url: [host: "localhost"],
