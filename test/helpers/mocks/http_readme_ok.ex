@@ -1,8 +1,8 @@
 defmodule Awelix.Helpers.Mocks.HttpReadmeOk do
-  def get(_, _, _ \\ []) do{:ok,
+  def post(_, _, _, _) do{:ok,
      %HTTPoison.Response{
        # MTIzNDU2 means 123456
-       body: "{\"content\":\"MTIzNDU2\"}"
+       body: %{"data" => %{"repository" => %{"object" => %{"contents" => "123456"}}}} |> Jason.encode!()
      }}
   end
 end

@@ -7,7 +7,7 @@ defmodule Awelix.Services.Github.Readme.PackagesExtractor do
 
   # This is how a line has to look like.
   @line_regex ~r/^\[([^]]+)\]\(([^)]+)\) - (.+)([\.\!]+)$/
-  @url_regex ~r/^https\:\/\/github.com\/(.+)\/(.+)$/
+  @url_regex ~r/^https\:\/\/github.com\/([^\/]+)\/([^\/]+)$/
 
   @recources_caption "Resources"
 
@@ -65,14 +65,14 @@ defmodule Awelix.Services.Github.Readme.PackagesExtractor do
            }
          ]
        }) do
-    with {url, name, desc} <- parse_line(text),
-         {owner, repo} <- parse_repo_url(url) do
+    with {url, title, desc} <- parse_line(text),
+         {owner, name} <- parse_repo_url(url) do
       %Package{
         name: name,
         url: url,
         desc: desc,
         owner: owner,
-        repo: repo
+        title: title
       }
     else
       _ ->
@@ -84,14 +84,14 @@ defmodule Awelix.Services.Github.Readme.PackagesExtractor do
   defp parse_line(line) do
     case Regex.run(@line_regex, line) do
       nil -> :line_parse_failed
-      [^line, name, url, description, _dot] -> {url, name, description}
+      [^line, title, url, description, _dot] -> {url, title, description}
     end
   end
 
   @spec parse_repo_url(binary) :: {binary(), binary()} | :error
   defp parse_repo_url(url) do
     case Regex.run(@url_regex, url) do
-      [_url, owner, repo] -> {owner, repo}
+      [_url, owner, name] -> {owner, name}
       nil -> :error
     end
   end

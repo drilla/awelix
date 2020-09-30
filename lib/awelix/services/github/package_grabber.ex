@@ -6,9 +6,10 @@ defmodule Awelix.Services.Github.PackageGrabber do
 
   alias Awelix.Pact, as: Pact
   alias Awelix.Services.Packages.Package
+  alias Awelix.Services.Github.RepositoryModel
 
   @limit Application.get_env(:awelix, :packages_limit)
-  @parallel_requests Application.get_env(:awelix, :parallel_requests)
+  @offset Application.get_env(:awelix, :packages_offset)
 
   ###########
   # INTERFACE
@@ -21,9 +22,9 @@ defmodule Awelix.Services.Github.PackageGrabber do
   @spec fetch() ::
           {:ok, list()} | {:error, atom()}
   def fetch() do
-    with {:ok, readme} <- Pact.github_api().fetch_readme("h4cc", "awesome-elixir"),
+    with {:ok, readme} <- Pact.github_api().fetch_readme(%RepositoryModel{owner: "h4cc", name: "awesome-elixir"}),
          {:ok, readme_packages} <- parse_readme(readme),
-         {:ok, packages} <- fetch_packages(readme_packages |> limit(@limit)) do
+         {:ok, packages} <- fetch_packages(readme_packages |> limit(@limit, @offset)) do
       {:ok, packages}
     else
       {:error, _reason} = result ->
@@ -41,9 +42,7 @@ defmodule Awelix.Services.Github.PackageGrabber do
 
     models =
       readme_packages
-      |> fetch_each_repo_stars()
-      |> fetch_each_repo_last_commit_date()
-      |> remove_package_errors()
+      |> fetch_each_repo_info()
 
     {:ok, models}
   end
@@ -60,48 +59,40 @@ defmodule Awelix.Services.Github.PackageGrabber do
     end
   end
 
-  @spec fetch_each_repo_stars([Package.t()]) :: [Package.t() | :error]
-  defp fetch_each_repo_stars(readme_packages) do
-    Task.async_stream(
-      readme_packages,
-      fn %Package{owner: owner, repo: repo} = package ->
-        case Pact.github_api().fetch_repo_info(owner, repo) do
-          {:ok, %{stars: stars, branch: branch}} ->
-            %Package{package | stars: stars, branch: branch}
-          _ -> :error
-        end
-      end,
-      max_concurrency: @parallel_requests,
-      on_timeout: {:exit, :error}
-    )
-    |> Enum.to_list()
-    |> remove_package_errors()
-    |> Enum.map(fn {_, item} -> item end)
+  @spec fetch_each_repo_info([Package.t()]) :: [Package.t() | :error]
+  defp fetch_each_repo_info(readme_packages) do
+    Pact.github_api().fetch_repos_info(readme_packages)
+    |> update_packages(readme_packages)
   end
 
-  @spec fetch_each_repo_last_commit_date([Package.t()]) :: [Package.t()]
-  defp fetch_each_repo_last_commit_date(readme_packages) do
-    Task.async_stream(
-      readme_packages,
-      fn %Package{owner: owner, repo: repo, branch: branch} = package ->
-        case Pact.github_api().fetch_repo_last_commit_date(owner, repo, branch) do
-          {:ok, date} -> %Package{package | last_commit_date: date}
-          _ -> :error
-        end
-      end,
-      max_concurrency: @parallel_requests,
-      on_timeout: {:exit, :error}
-    )
-    |> Enum.to_list()
-    |> remove_package_errors()
-    |> Enum.map(fn {_, item} -> item end)
+  defp update_packages({:ok, fetched_data}, packages) do
+    indexed_data =
+      Enum.reduce(fetched_data, %{}, fn %{name: name} = item, acc ->
+        Map.put(acc, name, item)
+      end)
+
+    packages
+    |> Enum.map(fn %Package{name: name} = package ->
+      case Map.get(indexed_data, name) do
+        %{stars: stars, last_commit_date: date} ->
+          %Package{package | stars: stars, last_commit_date: date}
+        nil ->
+          Logger.info("not found in api:#{name} #{package.url}")
+          nil
+      end
+    end)
+    |> Enum.filter(fn item -> item != nil end)
+
   end
 
-  @spec remove_package_errors([{:ok, Package.t()} | {:ok, :error}]) :: [{:ok, Package.t()}]
-  defp remove_package_errors(list) do
-    Enum.filter(list, fn item -> item != {:ok, :error} end)
+  defp limit(list, limit, nil), do: limit(list, limit, 0)
+  defp limit(list, nil, offset), do: limit(list, Enum.count(list), offset)
+  defp limit(list, limit, offset) do
+    total = Enum.count(list)
+    list
+    |> Enum.reverse()
+    |> Enum.take(total - offset)
+    |> Enum.reverse()
+    |> Enum.take(limit)
   end
-
-  defp limit(list, nil), do: list
-  defp limit(list, count), do: Enum.take(list, count)
 end

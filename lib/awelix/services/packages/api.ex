@@ -38,6 +38,7 @@ defmodule Awelix.Services.Packages.Api do
           items
           |> filter_by_min_stars(min_stars)
           |> group_by_category()
+          |> sort_by_category()
 
         {:ok, categories}
 
@@ -57,5 +58,9 @@ defmodule Awelix.Services.Packages.Api do
     Enum.group_by(packages, &Map.get(&1, :category))
     |> Map.to_list()
     |> Enum.map(fn {name, items} -> %Category{name: name, items: items} end)
+  end
+
+  defp sort_by_category(list) do
+    Enum.sort_by(list, fn %Category{name: name} -> name end)
   end
 end

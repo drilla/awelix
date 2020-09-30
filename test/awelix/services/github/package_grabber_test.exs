@@ -15,7 +15,7 @@ defmodule Awelix.Services.Github.PackageGrabberTest do
              [
                %Awelix.Services.Packages.Package{
                  owner: "owner",
-                 repo: "repo",
+                 name: "repo",
                  category: "cat",
                  category_desc: "desc"
                }

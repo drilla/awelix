@@ -1,9 +1,23 @@
 defmodule Awelix.Helpers.Mocks.HttpOkStars do
-
-  def get(_, _, _) do
+  def post(_, _, _, _) do
     {:ok,
      %HTTPoison.Response{
-       body: %{stargazers_count: 10, default_branch: "branch"} |> Jason.encode!()
+       body:
+         %{
+           "data" => %{
+             "repo" => %{
+               "defaultBranchRef" => %{
+                 "target" => %{"committedDate" => "2020-09-30T10:00:32Z"}
+               },
+               "name" => "repo",
+               "stargazerCount" => 10,
+               "owner" => %{
+                 "login" => "owner"
+               }
+             }
+           }
+         }
+         |> Jason.encode!()
      }}
   end
 end

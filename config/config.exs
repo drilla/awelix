@@ -13,7 +13,7 @@ config :awelix, Awelix.Services.Repo.RepoUpdater,
 
 config :awelix,
   packages_limit: nil,
-  parallel_requests: 100
+  packages_offset: nil
 
 # Configures the endpoint
 config :awelix, AwelixWeb.Endpoint,

@@ -1,6 +1,6 @@
 defmodule Awelix.Helpers.Mocks.HttpError do
 
-  def get(_, _, _ \\ []) do
+  def post(_, _, _, _) do
     {:error,
      %HTTPoison.Error{
        reason: "test",

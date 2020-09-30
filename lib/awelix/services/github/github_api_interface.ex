@@ -1,6 +1,6 @@
 defmodule Awelix.Services.Github.GithubApiInterface do
+  alias Awelix.Services.Github.RepositoryModel
   #todo doc
-  @callback fetch_readme(binary(), binary()) :: {:ok, binary()} | {:error, :github_api_error | :other}
-  @callback fetch_repo_info(binary(), binary()) :: {:ok, integer()} | {:error, :github_api_error | :other}
-  @callback fetch_repo_last_commit_date(binary(), binary(), binary()) :: {:ok, DateTime.t()} | {:error, :github_api_error | :other}
+  @callback fetch_readme(RepositoryModel.t()) :: {:ok, binary()} | {:error, :github_api_error | :other}
+  @callback fetch_repos_info([RepositoryModel.t()]) :: {:ok, [RepositoryModel.t()]} | {:error, :github_api_error | :other}
 end
