@@ -7,6 +7,7 @@ defmodule Awelix.Services.Github.PackageGrabber do
   alias Awelix.Pact, as: Pact
   alias Awelix.Services.Packages.Package
   alias Awelix.Services.Github.RepositoryModel
+  alias Awelix.Services.Github.RepositoryModelAdapter
 
   @limit Application.get_env(:awelix, :packages_limit)
   @offset Application.get_env(:awelix, :packages_offset)
@@ -22,9 +23,12 @@ defmodule Awelix.Services.Github.PackageGrabber do
   @spec fetch() ::
           {:ok, list()} | {:error, atom()}
   def fetch() do
-    with {:ok, readme} <- Pact.github_api().fetch_readme(%RepositoryModel{owner: "h4cc", name: "awesome-elixir"}),
+    readme_repo = %RepositoryModel{owner: "h4cc", name: "awesome-elixir"}
+
+    with {:ok, readme}          <- Pact.github_api().fetch_readme(readme_repo),
          {:ok, readme_packages} <- parse_readme(readme),
-         {:ok, packages} <- fetch_packages(readme_packages |> limit(@limit, @offset)) do
+         limited_list           <- readme_packages |> limit(@limit, @offset),
+         {:ok, packages}        <- fetch_packages(limited_list) do
       {:ok, packages}
     else
       {:error, _reason} = result ->
@@ -61,7 +65,7 @@ defmodule Awelix.Services.Github.PackageGrabber do
 
   @spec fetch_each_repo_info([Package.t()]) :: [Package.t() | :error]
   defp fetch_each_repo_info(readme_packages) do
-    Pact.github_api().fetch_repos_info(readme_packages)
+    Pact.github_api().fetch_repos_by_chunk(readme_packages)
     |> update_packages(readme_packages)
   end
 
@@ -76,19 +80,21 @@ defmodule Awelix.Services.Github.PackageGrabber do
       case Map.get(indexed_data, name) do
         %{stars: stars, last_commit_date: date} ->
           %Package{package | stars: stars, last_commit_date: date}
+
         nil ->
           Logger.info("not found in api:#{name} #{package.url}")
           nil
       end
     end)
     |> Enum.filter(fn item -> item != nil end)
-
   end
 
   defp limit(list, limit, nil), do: limit(list, limit, 0)
   defp limit(list, nil, offset), do: limit(list, Enum.count(list), offset)
+
   defp limit(list, limit, offset) do
     total = Enum.count(list)
+
     list
     |> Enum.reverse()
     |> Enum.take(total - offset)

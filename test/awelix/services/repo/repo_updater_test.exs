@@ -2,12 +2,11 @@ defmodule Awelix.Services.Repo.RepoUpdaterTest do
   use ExUnit.Case, async: false
 
   alias Awelix.Services.Repo.RepoUpdater
-  alias Awelix.Services.Packages.Package
   require Awelix.Pact
 
-  @doc """
-  тест по методу черного ящика. даже если один из сервисов ломается внутри, ответ не измениться
-  """
+  #"""
+  #тест по методу черного ящика. даже если один из сервисов ломается внутри, ответ не измениться
+  #"""
   describe "ok" do
     setup do
       repo =

@@ -5,7 +5,7 @@ defmodule Awelix.Services.Github.Readme.PackageExtractorTest do
 
   # counted it all night long!
   # общее число 1292, но валидных - 1268, остальные не от гитхаба
-  @static_readme_packages_count 1268
+  @static_readme_packages_count 1262
 
   alias Awelix.Services.Github.Readme.PackagesExtractor
 

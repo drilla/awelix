@@ -8,6 +8,7 @@ defmodule Awelix.Services.Github.GithubGraphqlApi do
   alias Awelix.Services.Github.ReadmeGraphql
   alias Awelix.Services.Github.ReposGraphql
   alias Awelix.Services.Github.RepositoryModel
+  alias Awelix.Services.Github.RepositoryModelAdapter
   require Logger
 
   @behaviour Awelix.Services.Github.GithubApiInterface
@@ -33,37 +34,47 @@ defmodule Awelix.Services.Github.GithubGraphqlApi do
   end
 
   @impl true
-  def fetch_repos_info(repos) do
-    opts = [follow_redirect: true, timeout: 20000, recv_timeout: 20000]
-
+  def fetch_repos_by_chunk(repos) do
     result =
       repos
-      |> Enum.map(&RepositoryModel.from_package/1)
       |> ReposGraphql.query()
-      |> Enum.map(fn query ->
-        with {:ok, %HTTPoison.Response{body: body}} <-
-               Pact.http_client().post(@api_url, query, headers(), opts),
-             {:ok, %{"data" => packages_with_title}} <- Jason.decode(body) do
-          packages =
-            packages_with_title
-            |> Map.to_list()
-            |> Enum.filter(fn {_title, item} -> item != nil end)
-            |> Enum.map(&RepositoryModel.from_git_data(&1))
-
-          {:ok, packages}
-        else
-          error -> recycle_error(error)
-        end
+      |> Enum.map(&fetch_chunk/1)
+      |> Enum.map(fn
+        {:ok, list} -> list
+        error -> error
       end)
-      |> Enum.map(fn {:ok, list} -> list end)
-      |> Enum.concat()
 
-      {:ok, result}
+    if Enum.all?(result, fn
+         list when is_list(list) -> true
+         _ -> false
+       end) do
+      {:ok, Enum.concat(result)}
+    else
+      result |> hd()
+    end
   end
 
   #########
   # PRIVATE
   #########
+
+  defp fetch_chunk(query) do
+    opts = [follow_redirect: true, timeout: 20000, recv_timeout: 20000]
+
+    with {:ok, %HTTPoison.Response{body: body}} <-
+           Pact.http_client().post(@api_url, query, headers(), opts),
+         {:ok, %{"data" => packages_with_title}} <- Jason.decode(body) do
+      packages =
+        packages_with_title
+        |> Map.to_list()
+        |> Enum.filter(fn {_title, item} -> item != nil end)
+        |> Enum.map(&RepositoryModelAdapter.from_git_data(&1))
+
+      {:ok, packages}
+    else
+      error -> recycle_error(error)
+    end
+  end
 
   defp recycle_error({:error, %HTTPoison.Error{} = error}) do
     Logger.error(inspect(error))

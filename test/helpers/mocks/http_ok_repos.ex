@@ -1,4 +1,4 @@
-defmodule Awelix.Helpers.Mocks.HttpOkStars do
+defmodule Awelix.Helpers.Mocks.HttpOkRepos do
   def post(_, _, _, _) do
     {:ok,
      %HTTPoison.Response{

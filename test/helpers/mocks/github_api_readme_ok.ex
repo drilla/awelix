@@ -10,7 +10,7 @@ defmodule Awelix.Helpers.Mocks.GithubApiReadmeOk do
   end
 
   @impl true
-  def fetch_repos_info(_) do
+  def fetch_repos_by_chunk(_) do
     {:ok, [%RepositoryModel{name: "", owner: "", stars: 10}]}
   end
 

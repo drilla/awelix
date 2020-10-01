@@ -7,7 +7,7 @@ defmodule Awelix.Helpers.Mocks.GithubApiReadmeError do
   end
 
   @impl true
-  def fetch_repos_info(_) do
+  def fetch_repos_by_chunk(_) do
     {:error, :github_api_error}
   end
 
