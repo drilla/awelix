@@ -15,6 +15,7 @@ defmodule Awelix.Services.Github.GithubGraphqlApi do
 
   @api_url "https://api.github.com/graphql"
   @git_token System.get_env("GIT_TOKEN")
+  @git_repos_at_one_time Application.get_env(:awelix, :git_repos_at_one_time)
 
   @doc """
     получаем контент readme
@@ -37,12 +38,13 @@ defmodule Awelix.Services.Github.GithubGraphqlApi do
   def fetch_repos_by_chunk(repos) do
     result =
       repos
-      |> ReposGraphql.query()
+      |> ReposGraphql.queries(@git_repos_at_one_time)
       |> Task.async_stream(&fetch_chunk/1, timeout: 20_000)
       |> Enum.to_list()
       |> Enum.map(fn
         {:ok, {:ok, list}} -> list
         {:ok, error} -> error
+        _ -> {:error, :other}
       end)
 
     if Enum.all?(result, fn

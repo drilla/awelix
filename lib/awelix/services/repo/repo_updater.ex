@@ -36,7 +36,7 @@ defmodule Awelix.Services.Repo.RepoUpdater do
       case result do
         {:ok, packages} ->
           Pact.repo().update(packages)
-
+          Logger.info("repos updated!")
         {:error, reason} ->
           Logger.error("info update failed")
           Logger.error(inspect(reason))

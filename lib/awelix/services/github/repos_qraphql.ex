@@ -1,8 +1,8 @@
 defmodule Awelix.Services.Github.ReposGraphql do
   alias Awelix.Services.Github.RepositoryModel
 
-  @spec query([RepositoryModel.t()]) :: [binary()]
-  def query(repos \\ []) do
+  @spec queries([RepositoryModel.t()], non_neg_integer()) :: [binary()]
+  def queries(repos \\ [], chunk_size) do
       Enum.map(repos, fn %RepositoryModel{name: name, owner: owner} ->
         """
         #{json_title()}: repository(name: "#{name}", owner: "#{owner}") {
@@ -10,7 +10,7 @@ defmodule Awelix.Services.Github.ReposGraphql do
         }
         """
       end)
-      |> Enum.chunk_every(200)
+      |> Enum.chunk_every(chunk_size)
       |> Enum.map(fn chunk ->
         sub_query = chunk |> Enum.join("\n")
         """

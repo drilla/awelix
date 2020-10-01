@@ -13,7 +13,8 @@ config :awelix, Awelix.Services.Repo.RepoUpdater,
 
 config :awelix,
   packages_limit: nil,
-  packages_offset: nil
+  packages_offset: nil,
+  git_repos_at_one_time: 200
 
 # Configures the endpoint
 config :awelix, AwelixWeb.Endpoint,
