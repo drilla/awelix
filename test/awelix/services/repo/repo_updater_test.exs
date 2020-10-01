@@ -29,9 +29,6 @@ defmodule Awelix.Services.Repo.RepoUpdaterTest do
       %{}
     end
 
-    test "update, no failures" do
-      true = RepoUpdater.update()
-    end
 
     test "update async, no failures" do
       {:ok, :update_started} = RepoUpdater.update_async()
@@ -60,9 +57,5 @@ defmodule Awelix.Services.Repo.RepoUpdaterTest do
       %{}
     end
 
-    test "grabber failure" do
-      {:ok, :update_started} = RepoUpdater.update_async()
-      {:error, _} = RepoUpdater.update()
-    end
   end
 end

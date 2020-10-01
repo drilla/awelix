@@ -20,7 +20,8 @@ defmodule Awelix.Application do
 
       # Start a worker by calling: Awelix.Worker.start_link(arg)
       # {Awelix.Worker, arg}
-      Awelix.Services.Repo.RepoUpdater
+      Awelix.Services.Repo.RepoUpdater,
+      Awelix.Services.Repo.RepoUpdatePeriodical,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -28,7 +29,7 @@ defmodule Awelix.Application do
     opts = [strategy: :one_for_one, name: Awelix.Supervisor]
     result = Supervisor.start_link(children, opts)
 
-    Awelix.Services.Repo.RepoUpdater.run([])
+    Awelix.Services.Repo.RepoUpdater.update_async()
 
     result
   end
