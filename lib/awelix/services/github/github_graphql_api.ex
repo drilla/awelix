@@ -38,10 +38,11 @@ defmodule Awelix.Services.Github.GithubGraphqlApi do
     result =
       repos
       |> ReposGraphql.query()
-      |> Enum.map(&fetch_chunk/1)
+      |> Task.async_stream(&fetch_chunk/1, timeout: 20_000)
+      |> Enum.to_list()
       |> Enum.map(fn
-        {:ok, list} -> list
-        error -> error
+        {:ok, {:ok, list}} -> list
+        {:ok, error} -> error
       end)
 
     if Enum.all?(result, fn

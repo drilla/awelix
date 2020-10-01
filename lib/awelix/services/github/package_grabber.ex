@@ -65,7 +65,9 @@ defmodule Awelix.Services.Github.PackageGrabber do
 
   @spec fetch_each_repo_info([Package.t()]) :: [Package.t() | :error]
   defp fetch_each_repo_info(readme_packages) do
-    Pact.github_api().fetch_repos_by_chunk(readme_packages)
+    readme_packages
+    |> Enum.map(&RepositoryModelAdapter.from_package/1)
+    |> Pact.github_api().fetch_repos_by_chunk()
     |> update_packages(readme_packages)
   end
 
