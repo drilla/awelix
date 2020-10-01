@@ -30,10 +30,11 @@ defmodule Awelix.Services.Repo.RepoUpdater do
 
   def update_async() do
     case get_state() do
-     %{updating: false} ->
-      set_updating()
-      GenServer.cast(__MODULE__, :update)
-      {:ok, :update_started}
+      %{updating: false} ->
+        set_updating()
+        GenServer.cast(__MODULE__, :update)
+        {:ok, :update_started}
+
       e ->
         IO.inspect(e)
         {:error, :updating_now}
@@ -44,37 +45,42 @@ defmodule Awelix.Services.Repo.RepoUpdater do
     GenServer.call(__MODULE__, :state)
   end
 
-  defp set_updating() do
-    GenServer.call(__MODULE__, :set_updating)
+  defp set_updating(value \\ true) do
+    GenServer.call(__MODULE__, {:set_updating, value})
   end
 
   def handle_call(:state, _from, state) do
     {:reply, state, state}
   end
 
-  def handle_call(:set_updating, _from, state) do
-    {:reply, :ok, Map.put(state, :updating, true)}
+  def handle_call({:set_updating, value}, _from, state) do
+    {:reply, :ok, Map.put(state, :updating, value)}
   end
 
   def handle_cast(:update, state) do
     do_update()
-    {:noreply, %{state | updating: false}}
+    {:noreply, state}
   end
 
-  @spec do_update() :: {:error, atom()} | :ok
+  @spec do_update() :: :ok
   defp do_update() do
-    result = Pact.github_package_grabber().fetch()
+    Task.start_link(fn ->
+      result = Pact.github_package_grabber().fetch()
+      case result do
+        {:ok, packages} ->
+          Pact.repo().update(packages)
+          Logger.info("repos updated!")
+          :ok
 
-    case result do
-      {:ok, packages} ->
-        Pact.repo().update(packages)
-        Logger.info("repos updated!")
-        :ok
+        {:error, reason} ->
+          Logger.error("info update failed")
+          Logger.error(inspect(reason))
+          {:error, reason}
+      end
 
-      {:error, reason} ->
-        Logger.error("info update failed")
-        Logger.error(inspect(reason))
-        {:error, reason}
-    end
+      set_updating(false)
+
+    end)
+    :ok
   end
 end
