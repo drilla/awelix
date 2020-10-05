@@ -1,10 +1,15 @@
 # Awelix
 
 - предварительно установить docker, docker-compose
-- скопировать .env.dist > .env и заполнить значения.
-- config.secret.dist -> config.secret.exs и заполнить значения.
+- скопировать .env.dist > .env
+- config.secret.dist -> config.secret.exs и заполнить значения
 - docker-compose build
-- docker-compose up web
+- docker-compose up web 
+- дождаться пока скомпилируется
+
+  Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+  если через полминуты не произошла загрузка - проверьте лог, скорее всего токен не указан
+
 - для запуска тестов 
    перейти в папку с приложением
     
@@ -24,6 +29,3 @@
 приложение в докер стартует самостояетльно. 
 кэшу нужен разогрев. обычно это 15-20 сек
 
-а дальше как обычно
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-если через полминуты не произошла загрузка - проверьте лог, скорее всего токен не указан
