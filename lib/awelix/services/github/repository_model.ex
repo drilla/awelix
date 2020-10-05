@@ -3,7 +3,6 @@ defmodule Awelix.Services.Github.RepositoryModel do
   данные репозитория гитхаб
   """
 
-  alias Awelix.Services.Packages.Package
   @enforce_keys [:name, :owner]
   @type t :: %__MODULE__{
           name: binary,

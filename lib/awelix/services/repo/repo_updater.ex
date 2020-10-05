@@ -12,6 +12,27 @@ defmodule Awelix.Services.Repo.RepoUpdater do
 
   require Awelix.Pact
 
+  ###########
+  # INTERFACE
+  ###########
+
+  @impl Awelix.Services.Repo.RepoUpdaterInterface
+  def update_async() do
+    case get_state() do
+      %{updating: false} ->
+        set_updating()
+        GenServer.cast(__MODULE__, :update)
+        {:ok, :update_started}
+
+      %{updating: true} ->
+        {:error, :updating_now}
+    end
+  end
+
+  ###########
+  # GENSERVER
+  ###########
+
   def child_spec(opts) do
     %{
       id: __MODULE__,
@@ -24,31 +45,17 @@ defmodule Awelix.Services.Repo.RepoUpdater do
     GenServer.start_link(__MODULE__, state, name: __MODULE__)
   end
 
+  @impl GenServer
   def init(_) do
-    {:ok, %{updating: false}}
-  end
 
-  def update_async() do
-    case get_state() do
-      %{updating: false} ->
-        set_updating()
-        GenServer.cast(__MODULE__, :update)
-        {:ok, :update_started}
-
-      e ->
-        IO.inspect(e)
-        {:error, :updating_now}
+    # вызываем разогрев кеша после инита
+    case Mix.env() do
+      :test -> {:ok, %{updating: false}}
+      _     -> {:ok, %{updating: true}, {:continue, :warmup}}
     end
   end
 
-  def get_state() do
-    GenServer.call(__MODULE__, :state)
-  end
-
-  defp set_updating(value \\ true) do
-    GenServer.call(__MODULE__, {:set_updating, value})
-  end
-
+  @impl GenServer
   def handle_call(:state, _from, state) do
     {:reply, state, state}
   end
@@ -57,15 +64,35 @@ defmodule Awelix.Services.Repo.RepoUpdater do
     {:reply, :ok, Map.put(state, :updating, value)}
   end
 
+  @impl GenServer
   def handle_cast(:update, state) do
     do_update()
     {:noreply, state}
+  end
+
+  @impl GenServer
+  def handle_continue(:warmup, state) do
+    do_update()
+    {:noreply, %{state | updating: true}}
+  end
+
+  #########
+  # PRIVATE
+  #########
+
+  defp get_state() do
+    GenServer.call(__MODULE__, :state)
+  end
+
+  defp set_updating(value \\ true) do
+    GenServer.call(__MODULE__, {:set_updating, value})
   end
 
   @spec do_update() :: :ok
   defp do_update() do
     Task.start_link(fn ->
       result = Pact.github_package_grabber().fetch()
+
       case result do
         {:ok, packages} ->
           Pact.repo().update(packages)
@@ -79,8 +106,8 @@ defmodule Awelix.Services.Repo.RepoUpdater do
       end
 
       set_updating(false)
-
     end)
+
     :ok
   end
 end

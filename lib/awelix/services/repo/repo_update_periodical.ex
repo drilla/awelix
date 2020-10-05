@@ -10,12 +10,7 @@ defmodule Awelix.Services.Repo.RepoUpdatePeriodical do
 
   def run(_) do
     if Mix.env() != :test do
-      update_async()
+      Awelix.Services.Repo.RepoUpdater.update_async()
     end
-  end
-
-  def update_async() do
-    Awelix.Services.Repo.RepoUpdater.update_async()
-    {:ok, :update_started}
   end
 end

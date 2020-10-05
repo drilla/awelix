@@ -1,4 +1,3 @@
 defmodule Awelix.Services.Repo.RepoUpdaterInterface do
-  #@callback update_async() :: {:ok, :update_started}
-  @callback update() :: true | {:error, atom()}
+  @callback update_async :: {:error, :updating_now} | {:ok, :update_started}
 end

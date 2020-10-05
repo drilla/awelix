@@ -10,8 +10,6 @@ defmodule Awelix.Application do
 
     children = [
       Awelix.Pact,
-      # Start the Telemetry supervisor
-      # AwelixWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: Awelix.PubSub},
 
@@ -29,7 +27,7 @@ defmodule Awelix.Application do
     opts = [strategy: :one_for_one, name: Awelix.Supervisor]
     result = Supervisor.start_link(children, opts)
 
-    Awelix.Services.Repo.RepoUpdater.update_async()
+    #Awelix.Services.Repo.RepoUpdater.update_async()
 
     result
   end
