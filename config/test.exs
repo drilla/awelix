@@ -8,3 +8,6 @@ config :awelix, AwelixWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :awelix,
+  packages_limit: 30

@@ -16,5 +16,4 @@ config :awelix, AwelixWeb.Endpoint,
 config :logger, level: :info
 
 config  :awelix,
-  packages_limit: nil,
-  parallel_requests: 100
+  packages_limit: nil

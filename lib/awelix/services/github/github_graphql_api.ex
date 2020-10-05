@@ -14,7 +14,7 @@ defmodule Awelix.Services.Github.GithubGraphqlApi do
   @behaviour Awelix.Services.Github.GithubApiInterface
 
   @api_url "https://api.github.com/graphql"
-  @git_token System.get_env("GIT_TOKEN")
+  @git_token  Application.get_env(:awelix, :git_token)
   @git_repos_at_one_time Application.get_env(:awelix, :git_repos_at_one_time)
 
   @doc """
