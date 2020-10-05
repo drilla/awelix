@@ -1,4 +1,4 @@
-defmodule Awelix.Services.Github.GithubApiInterface do
+defmodule Awelix.Services.Github.Graphql.ApiInterface do
   alias Awelix.Services.Github.RepositoryModel
   #todo doc
   @callback fetch_readme(RepositoryModel.t()) :: {:ok, binary()} | {:error, :github_api_error | :other}

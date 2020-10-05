@@ -3,7 +3,7 @@ defmodule Awelix.Services.Github.GithubApiTest do
 
   require Awelix.Pact
 
-  alias Awelix.Services.Github.GithubGraphqlApi, as: GithubApi
+  alias Awelix.Services.Github.Graphql.Api, as: GithubApi
   alias Awelix.Services.Github.RepositoryModel
 
   alias Awelix.Helpers.Mocks.{

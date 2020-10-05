@@ -1,7 +1,7 @@
 defmodule Awelix.Helpers.Mocks.GithubApiReadmeOk do
 
   alias  Awelix.Services.Github.RepositoryModel
-  @behaviour Awelix.Services.Github.GithubApiInterface
+  @behaviour Awelix.Services.Github.Graphql.ApiInterface
 
   @impl true
   def fetch_readme(_) do

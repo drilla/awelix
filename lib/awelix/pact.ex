@@ -11,7 +11,7 @@ defmodule Awelix.Pact do
   register(:repo_updater, Awelix.Services.Repo.RepoUpdater)
   register(:github_package_grabber, Awelix.Services.Github.PackageGrabber)
   register(:github_readme_packages_extractor, Awelix.Services.Github.Readme.PackagesExtractor)
-  register(:github_api, Awelix.Services.Github.GithubGraphqlApi)
+  register(:github_api, Awelix.Services.Github.Graphql.Api)
 
   @doc """
     :: Awelix.Services.Repo.RepoInterface

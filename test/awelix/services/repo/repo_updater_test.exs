@@ -9,6 +9,7 @@ defmodule Awelix.Services.Repo.RepoUpdaterTest do
   #"""
   describe "ok" do
     setup do
+      GenServer.call(RepoUpdater, {:set_updating, false})
       repo =
         Awelix.Pact.generate :repo do
           def update(_) do
@@ -35,8 +36,9 @@ defmodule Awelix.Services.Repo.RepoUpdaterTest do
     end
   end
 
-  describe "failures" do
+  describe "update in progress" do
     setup do
+       GenServer.call(RepoUpdater, {:set_updating, true})
       repo =
         Awelix.Pact.generate :repo do
           def update(_) do
@@ -56,6 +58,8 @@ defmodule Awelix.Services.Repo.RepoUpdaterTest do
 
       %{}
     end
-
+    test "update async, in progress" do
+      {:error, :updating_now} = RepoUpdater.update_async()
+    end
   end
 end

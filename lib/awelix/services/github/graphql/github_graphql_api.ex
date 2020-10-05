@@ -1,17 +1,17 @@
-defmodule Awelix.Services.Github.GithubGraphqlApi do
+defmodule Awelix.Services.Github.Graphql.Api do
   @moduledoc """
     запрашиваем информацию у github
   """
 
   alias Awelix.Pact, as: Pact
 
-  alias Awelix.Services.Github.ReadmeGraphql
-  alias Awelix.Services.Github.ReposGraphql
+  alias Awelix.Services.Github.Graphql.Query.Readme
+  alias Awelix.Services.Github.Graphql.Query.Repos
   alias Awelix.Services.Github.RepositoryModel
   alias Awelix.Services.Github.RepositoryModelAdapter
   require Logger
 
-  @behaviour Awelix.Services.Github.GithubApiInterface
+  @behaviour Awelix.Services.Github.Graphql.ApiInterface
 
   @api_url "https://api.github.com/graphql"
   @git_token  Application.get_env(:awelix, :git_token)
@@ -23,7 +23,7 @@ defmodule Awelix.Services.Github.GithubGraphqlApi do
   @impl true
   def fetch_readme(%RepositoryModel{} = repo) do
     with {:ok, %HTTPoison.Response{body: body}} <-
-           Pact.http_client().post(@api_url, ReadmeGraphql.query(repo), headers(),
+           Pact.http_client().post(@api_url, Readme.query(repo), headers(),
              follow_redirect: true
            ),
          {:ok, %{"data" => %{"repository" => %{"object" => %{"contents" => content}}}}} <-
@@ -38,7 +38,7 @@ defmodule Awelix.Services.Github.GithubGraphqlApi do
   def fetch_repos_by_chunk(repos) do
     result =
       repos
-      |> ReposGraphql.queries(@git_repos_at_one_time)
+      |> Repos.queries(@git_repos_at_one_time)
       |> Task.async_stream(&fetch_chunk/1, timeout: 20_000)
       |> Enum.to_list()
       |> Enum.map(fn

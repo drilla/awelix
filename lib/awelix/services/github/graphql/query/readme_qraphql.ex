@@ -1,4 +1,4 @@
-  defmodule Awelix.Services.Github.ReadmeGraphql do
+  defmodule Awelix.Services.Github.Graphql.Query.Readme do
 
   alias Awelix.Services.Github.RepositoryModel
 

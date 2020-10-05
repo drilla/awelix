@@ -1,4 +1,4 @@
-defmodule Awelix.Services.Github.ReposGraphql do
+defmodule Awelix.Services.Github.Graphql.Query.Repos do
   alias Awelix.Services.Github.RepositoryModel
 
   @spec queries([RepositoryModel.t()], non_neg_integer()) :: [binary()]
